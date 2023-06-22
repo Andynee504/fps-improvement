@@ -3,12 +3,12 @@ const time = document.querySelector(`.time`);
 const tutorial = document.querySelector(`.instrucao`);
 const resultado = document.querySelector(`.resultado`);
 
-let startTime;
-let toggleStart = true;
-let toggleActive = false;
-let reactionTime;
-let resultNumber = 0;
-let averageResponse = [];
+let toggleStart = true; // define o início do teste
+let startTime; // início da contagem 
+let toggleActive = false; // indica o início de um novo teste para countdown
+let reactionTime; // inicialização da variável para obter cada tempo de reação durante o teste
+let resultNumber = 0; // elenca os resultados
+let averageResponse = []; // inicialização do array com os resultados de cada teste que depois será reinicializado
 
 // Alternador no botão "start" para iniciar ou para-lo
 start.addEventListener(`click`, (e) => {
@@ -82,7 +82,9 @@ function driveTest() {
     const intervals = setInterval(() => {
         time.classList.add(`btn-time`)
         startTime = new Date().getTime();
-        // registerReaction();
+        const newInterval = timeRand(); // Chama timeRand() novamente para obter um novo intervalo
+        clearInterval(intervals); // Limpa o intervalo atual
+        driveTest(); // Chama driveTest() recursivamente para iniciar o próximo intervalo com o novo valor
     }, timeRand());
     setTimeout(() => {
         clearInterval(intervals);
@@ -98,5 +100,5 @@ function driveTest() {
         resultNumber++;
         resultado.innerHTML += `<p>${resultNumber}. ${Math.floor(averageResponse.reduce((ac, val) => ac + val) / averageResponse.length)}ms</p>`;
         averageResponse = [];
-    }, 60000);
+    }, 30000);
 }
