@@ -98,7 +98,7 @@ function driveTest() {
             startTime = null;
         }
         resultNumber++;
-        resultado.innerHTML += `<p>${resultNumber}. ${Math.floor(averageResponse.reduce((ac, val) => ac + val) / averageResponse.length)}ms</p>`;
+        resultado.innerHTML += `<p>${resultNumber} :>> ${Math.floor(averageResponse.reduce((ac, val) => ac + val) / averageResponse.length)}ms</p>`;
         averageResponse = [];
     }, 30000);
 }
