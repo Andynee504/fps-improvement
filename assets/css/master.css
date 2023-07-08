@@ -14,67 +14,53 @@ body {
 main {
     background-color: var(--background);
     margin: 5em auto;
-    width: 40%;
+    max-width: 500px;
     border-radius: 5%;
     padding: 2em;
 }
 
-h1 {
-    color: var(--text);
+form {
     text-align: center;
+    font-size: 1.1em
 }
 
-p {
+fieldset {
+    border: solid 1px var(--text);
+    border-radius: 3%;
+}
+
+legend {
     color: var(--text);
-    text-indent: 2em;
-    line-height: 1.3em;
-    text-align: justify;
+    font-size: 1.5em;
 }
 
-.texto {
-    margin-bottom: 3em;
+.horario, .reset {
+    padding: .5em;
 }
 
-.instrucao {
-    text-align: center;
-    color: var(--primary-color);
-}
-
-button {
-    font-size: 2em;
-    color: var(--text);
-    background-color: var(--highlight);
-    border: 0 solid;
-    border-radius: 5%;
-    min-width: 40%;
-    padding: .5em 2em;
-    margin: .5em auto;
+.submit {
     display: block;
-    cursor: pointer;
+    padding: .5em 2em;
+    font-size: 1.2em;
+    margin: 1em auto;
 }
 
-.start {
-    transition-property: all;
-    transition-duration: 10ms;
-}
-
-.start:active {
-    background-color: var(--background-color);
-}
-
-.btn-time {
-    background-color: var(--primary-color);
-}
-
-.resultado {
+.outcome {
     border-radius: 5%;
     background-color: var(--highlight);
     width: 70%;
     padding: 1em 0;
     margin: 2em auto 2em;
-    color: var(--text);
     text-align: center;
-    font-size: 1.5em;
-    font-weight: 600;
-    user-select: none;
+}
+
+table {
+    margin: auto;
+    border: solid 1px black;
+    padding: 1em;
+}
+
+td {
+    text-align: start;
+    border-bottom: solid 1px black;
 }

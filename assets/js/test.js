@@ -1,104 +1,128 @@
-const start = document.querySelector(`.start`);
-const time = document.querySelector(`.time`);
-const tutorial = document.querySelector(`.instrucao`);
-const resultado = document.querySelector(`.resultado`);
-
-let toggleStart = true; // define o início do teste
-let startTime; // início da contagem 
-let toggleActive = false; // indica o início de um novo teste para countdown
-let reactionTime; // inicialização da variável para obter cada tempo de reação durante o teste
-let resultNumber = 0; // elenca os resultados
-let averageResponse = []; // inicialização do array com os resultados de cada teste que depois será reinicializado
-
-// Alternador no botão "start" para iniciar ou para-lo
-start.addEventListener(`click`, (e) => {
-    if (toggleStart) {
-        start.innerText = `Stop`;
-        time.classList.add(`btn-time`);
-        tutorial.innerText = `Aperte em "Time" para começar o tempo`;
-        time.classList.remove(`start`);
-        toggleStart = false;
-        toggleActive = true;
-    } else {
-        start.innerText = `Start`;
-        tutorial.innerText = `Aperte em "Start" para começar o teste`;
-        time.classList.remove(`btn-time`);
-        time.classList.add(`start`);
-        toggleStart = true;
-    }
-})
-
-// botão principal para realização do teste
-time.addEventListener(`click`, (e) => {
-    if (!toggleStart) {
-        time.classList.remove(`btn-time`)
-        countdown()
-        reactionTime = new Date().getTime() - startTime;
-        if (startTime) {
-            averageResponse.push(reactionTime)
-        }
-        startTime = null;
-    }
-})
-
-// contador regressivo para inicio do teste
-function countdown() {
-    let seconds = 3;
-    if (toggleActive) {
-        time.innerText = seconds;
-        const starting = setInterval(() => {
-            if (toggleStart) {
-                time.innerText = `Time`;
-                clearInterval(starting)
-                return
+(() => {
+    const firstInput = document.querySelector(`.horario`);
+    const submit = document.querySelector(`.submit`);
+    const outcome = document.querySelector(`.resultado`);
+    
+    class Schedule {
+        constructor(milliseconds, hours, minutes, dateInput) {
+            this.title0 = {
+                value: createDate(dateInput)
             }
-            seconds--;
-            time.innerText = seconds;
-            toggleActive = false;
-            if (seconds === 0) {
-                time.innerText = `Time`;
-                clearInterval(starting);
-                driveTest()
-                return;
-            } else if (seconds < 0) {
-                clearInterval(starting);
-                tutorial.innerText = `Ocorreu um erro. Favor recomeçar.`;
-                return;
-            }
-        }, 1000);
-    }
-};
-
-// variável aleatória durante aplicação do teste
-const timeRand = function (min = 3, max = 5) {
-    min *= 1000;
-    max *= 1000;
-    const random = Math.floor(Math.random() * (max - min) + min);
-    return random;
-}
-
-// aplicação do teste, impressão do resultado e redefinição para outra aplicação
-function driveTest() {
-    const intervals = setInterval(() => {
-        time.classList.add(`btn-time`)
-        startTime = new Date().getTime();
-        const newInterval = timeRand(); // Chama timeRand() novamente para obter um novo intervalo
-        clearInterval(intervals); // Limpa o intervalo atual
-        driveTest(); // Chama driveTest() recursivamente para iniciar o próximo intervalo com o novo valor
-    }, timeRand());
-    setTimeout(() => {
-        clearInterval(intervals);
-        console.log(averageResponse);
-        start.innerText = `Start`;
-        tutorial.innerText = `Aperte em "Start" para começar o teste`;
-        time.classList.remove(`btn-time`);
-        time.classList.add(`start`);
-        toggleStart = true;
-        if (startTime) {
-            startTime = null;
+            this.title1 = {
+                title: `Café:`,
+                value: createTime(milliseconds, hours, minutes)
+            };
+            this.title2 = {
+                title: `Lanche:`,
+                value: createTime(9000000, hours, minutes)
+            };
+            this.title3 = {
+                title: `Almoço:`,
+                value: createTime(21600000, hours, minutes)
+            };
+            this.title4 = {
+                title: `Lanche da Tarde:`,
+                value: createTime(34200000, hours, minutes)
+            };
+            this.title5 = {
+                title: `Jantar:`,
+                value: createTime(46800000, hours, minutes)
+            };
+            this.title6 = {
+                title: `Hora de deitar:`,
+                value: createTime(54000000, hours, minutes)
+            };
         }
-        resultNumber++;
-        resultado.innerHTML += `<p>${resultNumber} :>> ${Math.floor(averageResponse.reduce((ac, val) => ac + val) / averageResponse.length)}ms</p>`;
-        averageResponse = [];
-    }, 30000);
-}
+    }
+    
+    function createDate(dateInput) {
+        let today = new Date(dateInput);
+        const monthArray = [`Janeiro`, `Fevereiro`, `Março`, `Abril`, `Maio`, `Junho`, `Julho`, `Agosto`, `Setembro`, `Outubro`, `Novembro`, `Dezembro`];
+        const date = today.getDate();
+        const month = today.getMonth();
+        const year = today.getFullYear();
+        return `${date} de ${monthArray[month]} de ${year}`;
+    }
+    
+    function createTime(milliseconds, hours, minutes) {
+        let newDate = new Date();
+        if (hours && minutes) {
+            newDate.setHours(hours);
+            newDate.setMinutes(minutes);
+        }
+        if (milliseconds) {
+            newDate.setMilliseconds(milliseconds);
+        }
+        return newDate.toLocaleTimeString(`pt-BR`, { timeStyle: `short` });
+    }
+    
+    function createTable(schedule) {
+        const table = document.createElement('table');
+        outcome.appendChild(table);
+        
+        createTableHeader(schedule, table);
+        createTableRows(schedule, table);
+    }
+    
+    function createTableHeader(schedule, table) {
+        const headerRow = document.createElement('tr');
+        const headerCell = document.createElement('th');
+        headerCell.setAttribute('colspan', '2');
+        headerCell.setAttribute('class', 'date');
+        headerCell.style.textAlign = 'center';
+        headerRow.appendChild(headerCell);
+        
+        const dateValue = Object.values(schedule)[0].value;
+        headerCell.appendChild(document.createTextNode(dateValue));
+        
+        table.appendChild(headerRow);
+    }
+    
+    function createTableRows(schedule, table) {
+        for (let i = 1; i < Object.values(schedule).length; i++) {
+            const scheduleItem = Object.values(schedule)[i];
+            const row = document.createElement('tr');
+            
+            const titleCell = document.createElement('td');
+            titleCell.appendChild(document.createTextNode(scheduleItem.title));
+            row.appendChild(titleCell);
+            
+            const valueCell = document.createElement('td');
+            valueCell.appendChild(document.createTextNode(scheduleItem.value));
+            row.appendChild(valueCell);
+            
+            table.appendChild(row);
+        }
+    }
+    
+    function saveSchedule(schedule) {
+        localStorage.setItem(`schedule`, JSON.stringify(schedule));
+    }
+    
+    function setSchedule() {
+        const scheduleSaved = localStorage.getItem(`schedule`);
+        if (scheduleSaved) {
+            const schedule = JSON.parse(scheduleSaved);
+            createTable(schedule);
+        }
+    };
+    setSchedule();
+    
+    submit.addEventListener(`click`, (e) => {
+        e.preventDefault();
+        if (outcome.firstChild) {
+            outcome.removeChild(outcome.firstChild);
+        }
+        if (firstInput.value) {
+            const hours = parseInt(firstInput.value.slice(0, 2));
+            const minutes = parseInt(firstInput.value.slice(3, 5));
+            let schedule = new Schedule(0, hours, minutes, Date.now());
+            createTable(schedule);
+            saveSchedule(schedule);
+        } else {
+            let schedule = new Schedule(0, null, null, Date.now());
+            createTable(schedule);
+            saveSchedule(schedule);
+        }
+    })
+})();
